@@ -87,12 +87,12 @@
     }
 
     ::-webkit-scrollbar-thumb {
-        background: #2185C7;
+        background: #2185c7;
         border-radius: 15px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background: #2185C7;
+        background: #2185c7;
     }
 
     table {
@@ -124,7 +124,7 @@
     }
 
     .text-danger {
-        color: #dd5656 !important;
+        color: #fd5c5c !important;
     }
 
     .bg-primary {
@@ -138,6 +138,10 @@
 
     .bg-warning {
         background-color: #1449ef !important;
+    }
+
+    .bg-danger {
+        background-color: #fd5c5c !important;
     }
 
     .menu-item {
