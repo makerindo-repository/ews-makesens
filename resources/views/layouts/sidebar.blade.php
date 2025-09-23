@@ -43,7 +43,7 @@
                         x-transition:leave-start="opacity-100 translate-y-0"
                         x-transition:leave-end="opacity-0 -translate-y-1">
                         <li>
-                            <a href="#" class="menu-link">
+                            <a href="{{ route('iot-node.index') }}" class="menu-link">
                                 <div class="text-sm"><span class="me-2">--</span> Data IoT Node</div>
                             </a>
                         </li>
