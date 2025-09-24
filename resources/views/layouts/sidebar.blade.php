@@ -84,7 +84,7 @@
                 </li>
 
                 <li class="menu-item">
-                    <a href="#" class="menu-link">
+                    <a href="{{ route('user.index') }}" class="menu-link">
                         <i class="menu-icon fa-solid fa-users"></i>
                         <div class="text-base">Manajemen User</div>
                     </a>
