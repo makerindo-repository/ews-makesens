@@ -53,7 +53,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="menu-link">
+                            <a href="{{ route('location.index') }}" class="menu-link">
                                 <div class="text-sm"><span class="me-2">--</span> Data Lokasi</div>
                             </a>
                         </li>
