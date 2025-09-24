@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\IoTNodeController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,15 @@ Route::middleware('auth')->group(function () {
         'edit' => 'iot-node.edit',
         'update' => 'iot-node.update',
         'destroy' => 'iot-node.destroy',
+    ]);
+    
+    Route::resource('location', LocationController::class)->except('show')->names([
+        'index' => 'location.index',
+        'create' => 'location.create',
+        'store' => 'location.store',
+        'edit' => 'location.edit',
+        'update' => 'location.update',
+        'destroy' => 'location.destroy',
     ]);
 });
 
