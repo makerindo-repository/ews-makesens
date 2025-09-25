@@ -106,7 +106,7 @@ class UserController extends Controller
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|confirmed|min:8',
-            'phone' => 'required|regex:/^0[0-9]{9,13}$/|unique:users,phone,' . $user->phone,
+            'phone' => 'required|regex:/^0[0-9]{9,13}$/|unique:users,phone,' . $user->id,
             'gender' => 'required|in:l,p',
             'address' => 'required|string',
         ], [
@@ -134,7 +134,6 @@ class UserController extends Controller
             'phone' => $request->phone,
             'gender' => $request->gender,
             'address' => $request->address,
-            'role' => 'admin'
         ];
 
         $user->update($data);
