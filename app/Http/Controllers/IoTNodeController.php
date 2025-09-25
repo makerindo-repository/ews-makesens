@@ -79,8 +79,9 @@ class IoTNodeController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $node = IoTNode::findOrFail($id);
         $request->validate([
-            'serial_number' => 'required|string|unique:iot_nodes,serial_number',
+            'serial_number' => 'required|string|unique:iot_nodes,serial_number,' . $node->serial_number,
             'name' => 'required|string',
             'location' => 'required|integer',
         ], [
@@ -99,7 +100,6 @@ class IoTNodeController extends Controller
             'location_id' => $request->location,
         ];
 
-        $node = IoTNode::findOrFail($id);
         $node->update($data);
 
         return redirect()->route('iot-node.index')->with('success', 'Data node berhasil diubah!');
