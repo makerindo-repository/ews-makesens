@@ -81,7 +81,7 @@ class IoTNodeController extends Controller
     {
         $node = IoTNode::findOrFail($id);
         $request->validate([
-            'serial_number' => 'required|string|unique:iot_nodes,serial_number,' . $node->serial_number,
+            'serial_number' => 'required|string|unique:iot_nodes,serial_number,' . $node->id,
             'name' => 'required|string',
             'location' => 'required|integer',
         ], [
