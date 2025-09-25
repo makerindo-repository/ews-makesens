@@ -14,4 +14,9 @@ class Location extends Model
     {
         return $this->hasOne(IoTNode::class);
     }
+
+    public function user()
+    {
+        return $this->hasMany(User::class, 'location_id');
+    }
 }
