@@ -3,6 +3,8 @@
 use App\Http\Controllers\IoTNodeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\VolunteerController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -34,6 +36,15 @@ Route::middleware('auth')->group(function () {
         'edit' => 'location.edit',
         'update' => 'location.update',
         'destroy' => 'location.destroy',
+    ]);
+    
+    Route::resource('user', UserController::class)->except('show')->names([
+        'index' => 'user.index',
+        'create' => 'user.create',
+        'store' => 'user.store',
+        'edit' => 'user.edit',
+        'update' => 'user.update',
+        'destroy' => 'user.destroy',
     ]);
 });
 
