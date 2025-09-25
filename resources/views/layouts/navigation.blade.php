@@ -21,7 +21,7 @@
                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-50">
                             {{-- <div>{{ Auth::user()->name }}</div> --}}
                             <img src="{{ Auth::user()->profile_picture ?? asset('images/default-user-avatar.png') }}"
-                                alt="User Avatar" class="h-10 w-10 rounded-full object-contain filter brightness-0 invert">
+                                alt="User Avatar" class="h-10 w-10 rounded-full object-cover">
                             {{-- <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 20 20">
