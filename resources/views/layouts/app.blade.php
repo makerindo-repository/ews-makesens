@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title id="tab-browser"></title>
 
     <link rel="icon" href="{{ asset('images/logoMakesens.png') }}">
 
@@ -36,7 +36,7 @@
 <body class="font-sans antialiased">
     <div x-data="{ sideopen: true }" class="min-h-screen w-full flex flex-auto bg-gray-100 items-stretch">
         @include('layouts.sidebar')
-        <div :class="{ 'lg:pl-64': sideopen }" class="pt-0 flex-1 flex flex-col min-w-0">
+        <div :class="{ 'lg:pl-64': sideopen }" class="pt-0 pb-3 flex-1 flex flex-col min-w-0">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -54,7 +54,7 @@
             </main>
 
             <!-- Footer -->
-            <footer class="px-6 py-1 font-normal text-base text-slate-400" id="footer"></footer>
+            <footer class="px-6 font-normal text-base text-slate-400" id="footer"></footer>
         </div>
     </div>
 
@@ -95,6 +95,38 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script>
+        const getApplicationSettings = async () => {
+            const response = await fetch('/api/application-settings');
+            const data = await response.json();
+
+            const footer = document.getElementById('footer');
+            const appLogo = document.getElementById('app-logo');
+            const menuFooter = document.getElementById('menu-footer');
+            const tabBrowser = document.getElementById('tab-browser');
+            const webName = document.getElementById('web-name');
+            const imgUrl = `/${data.image}`;
+            const fallbackImg = '/images/logoMakesens.png';
+
+            const img = new Image();
+            img.src = imgUrl;
+            img.onload = () => {
+                appLogo.innerHTML = `<img src="${imgUrl}" alt="Logo" class="object-cover">`;
+            };
+            img.onerror = () => {
+                appLogo.innerHTML = `<img src="${fallbackImg}" alt="Logo" class="object-cover">`;
+            };
+
+            menuFooter.textContent = `Versi ${data.version}`;
+            footer.textContent = `Copyright © ${data.copyright_year} ${data.copyright}. All Right Reserved.`;
+            tabBrowser.textContent = data.tab_name ?? "{{ config('app.name') }}";
+            webName.textContent = data.name;
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            getApplicationSettings()
+        });
+    </script>
     @stack('scripts')
 </body>
 

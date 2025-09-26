@@ -9,7 +9,7 @@
                         <path class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
-                    <p class="text-white font-semibold text-2xl ms-3">Early Warning System</p>
+                    <p class="text-white font-semibold text-2xl ms-3" id="web-name">Early Warning System</p>
                 </button>
             </div>
 
