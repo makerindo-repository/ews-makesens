@@ -97,12 +97,37 @@
                     </a>
                 </li>
 
-                <li class="menu-item">
-                    <a href="#" class="menu-link">
+                <li x-data="{ open: false }" class="menu-item w-full">
+                    <button @click="open = !open" :aria-expanded="open"
+                        class="menu-link w-full flex items-center pe-10 py-2 text-left">
                         <i class="menu-icon fa-solid fa-gear"></i>
-                        <div class="text-base">Pengaturan</div>
-                    </a>
+                        <div class="text-base flex-1">Pengaturan</div>
+                        <i class="fa-solid fa-chevron-down ml-2 transition-transform duration-200"
+                            :class="{ 'rotate-180': open }"></i>
+                    </button>
+
+                    <!-- submenu -->
+                    <ul x-show="open" x-cloak class="ml-8 mt-1 space-y-1"
+                        x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 -translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-125"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 -translate-y-1">
+
+                        <li>
+                            <a href="#" class="menu-link">
+                                <div class="text-sm"><span class="me-2">--</span> Pengaturan Aplikasi</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="menu-link">
+                                <div class="text-sm"><span class="me-2">--</span> Pengaturan Threshold</div>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
 
                 <li class="menu-item">
                     <a href="#" class="menu-link">
