@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplicationSettingController;
 use App\Http\Controllers\IoTNodeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProfileController;
@@ -55,6 +56,9 @@ Route::middleware('auth')->group(function () {
         'update' => 'volunteer.update',
         'destroy' => 'volunteer.destroy',
     ]);
+
+    Route::get('/application-setting', [ApplicationSettingController::class, 'index'])->name('app-setting.index');
+    Route::post('/application-setting', [ApplicationSettingController::class, 'store'])->name('app-setting.store');
 });
 
 require __DIR__ . '/auth.php';
