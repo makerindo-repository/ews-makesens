@@ -4,6 +4,7 @@ use App\Http\Controllers\ApplicationSettingController;
 use App\Http\Controllers\IoTNodeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ThresholdController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VolunteerController;
 use Illuminate\Support\Facades\Route;
@@ -59,6 +60,15 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/application-setting', [ApplicationSettingController::class, 'index'])->name('app-setting.index');
     Route::post('/application-setting', [ApplicationSettingController::class, 'store'])->name('app-setting.store');
+
+    Route::resource('threshold', ThresholdController::class)->except('show')->names([
+        'index' => 'threshold.index',
+        'create' => 'threshold.create',
+        'store' => 'threshold.store',
+        'edit' => 'threshold.edit',
+        'update' => 'threshold.update',
+        'destroy' => 'threshold.destroy',
+    ]);
 });
 
 require __DIR__ . '/auth.php';
