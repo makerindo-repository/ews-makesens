@@ -15,4 +15,9 @@ class IoTNode extends Model
     {
         return $this->belongsTo(Location::class);
     }
+
+    public function threshold()
+    {
+        return $this->hasOne(Threshold::class, 'iot_node_id');
+    }
 }
