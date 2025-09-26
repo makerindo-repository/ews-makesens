@@ -46,6 +46,15 @@ Route::middleware('auth')->group(function () {
         'update' => 'user.update',
         'destroy' => 'user.destroy',
     ]);
+
+    Route::resource('volunteer', VolunteerController::class)->except('show')->names([
+        'index' => 'volunteer.index',
+        'create' => 'volunteer.create',
+        'store' => 'volunteer.store',
+        'edit' => 'volunteer.edit',
+        'update' => 'volunteer.update',
+        'destroy' => 'volunteer.destroy',
+    ]);
 });
 
 require __DIR__ . '/auth.php';
