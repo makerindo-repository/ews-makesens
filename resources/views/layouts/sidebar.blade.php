@@ -67,7 +67,6 @@
                                 <div class="text-sm"><span class="me-2">--</span> Data Raw</div>
                             </a>
                         </li>
-                        <!-- tambahkan submenu lain di sini -->
                     </ul>
                 </li>
 
@@ -116,7 +115,7 @@
                         x-transition:leave-end="opacity-0 -translate-y-1">
 
                         <li>
-                            <a href="#" class="menu-link">
+                            <a href="{{ route('app-setting.index') }}" class="menu-link">
                                 <div class="text-sm"><span class="me-2">--</span> Pengaturan Aplikasi</div>
                             </a>
                         </li>
