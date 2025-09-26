@@ -12,6 +12,6 @@ class Threshold extends Model
 
     public function node()
     {
-        return $this->belongsTo(IoTNode::class);
+        return $this->belongsTo(IoTNode::class, 'iot_node_id');
     }
 }
