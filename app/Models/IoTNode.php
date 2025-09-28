@@ -20,4 +20,9 @@ class IoTNode extends Model
     {
         return $this->hasOne(Threshold::class, 'iot_node_id');
     }
+
+    public function pub_node()
+    {
+        return $this->hasMany(PublicNode::class, 'iot_node_id');
+    }
 }
