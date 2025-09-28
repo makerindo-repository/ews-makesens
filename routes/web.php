@@ -4,6 +4,7 @@ use App\Http\Controllers\ApplicationSettingController;
 use App\Http\Controllers\IoTNodeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicNodeController;
 use App\Http\Controllers\ThresholdController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VolunteerController;
@@ -68,6 +69,15 @@ Route::middleware('auth')->group(function () {
         'edit' => 'threshold.edit',
         'update' => 'threshold.update',
         'destroy' => 'threshold.destroy',
+    ]);
+    
+    Route::resource('public-node', PublicNodeController::class)->except('show')->names([
+        'index' => 'public-node.index',
+        'create' => 'public-node.create',
+        'store' => 'public-node.store',
+        'edit' => 'public-node.edit',
+        'update' => 'public-node.update',
+        'destroy' => 'public-node.destroy',
     ]);
 });
 
