@@ -6,6 +6,7 @@ use App\Models\Location;
 use App\Models\User;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VolunteerController extends Controller
 {
@@ -37,6 +38,12 @@ class VolunteerController extends Controller
         $user = User::findOrFail($request->user_id);
         $user->update(['role' => 'relawan', 'location_id' => $request->location]);
 
+        activity()
+            ->performedOn($user)
+            ->event('create')
+            ->causedBy(Auth::user())
+            ->log('Relawan baru ditambahkan: ' . $user->name);
+
         return redirect()->route('volunteer.index')->with('success', 'Data relawan berhasil disimpan!');
     }
 
@@ -64,7 +71,30 @@ class VolunteerController extends Controller
             'location.exists' => 'Lokasi tugas tidak valid.',
         ]);
 
-        $user->update(['location_id' => $request->location]);
+        $data = [
+            'location_id' => $request->location
+        ];
+        
+        $beforeUpdate = $user->getOriginal();
+        $user->update($data);
+
+        $changes = [];
+
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $beforeUpdate) &&  $beforeUpdate[$key] !== $value) {
+                $changes[$key] = [
+                    'old' => $beforeUpdate[$key],
+                    'new' => $value,
+                ];
+            }
+        }
+
+        activity()
+            ->performedOn($user)
+            ->event('update')
+            ->withProperties(['changes' => $changes])
+            ->causedBy(Auth::user())
+            ->log('Relawan dengan ID ' . $user->id . ' berhasil diupdate');
 
         return redirect()->route('volunteer.index')->with('success', 'Data relawan berhasil diubah!');
     }
@@ -76,6 +106,12 @@ class VolunteerController extends Controller
             ImageService::deleteImage($user->profile_picture);
         }
         $user->delete();
+
+        activity()
+            ->performedOn($user)
+            ->event('delete')
+            ->causedBy(Auth::user())
+            ->log('Relawan dihapus: ' . $user->name);
 
         return redirect()->route('volunteer.index')->with('success', 'Data relawan berhasil dihapus!');
     }
