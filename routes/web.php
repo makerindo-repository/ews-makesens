@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\ApplicationSettingController;
 use App\Http\Controllers\IoTNodeController;
 use App\Http\Controllers\LocationController;
@@ -82,6 +83,7 @@ Route::middleware('auth')->group(function () {
     ]);
 
     Route::get('/raw-data', [RawDataController::class, 'index'])->name('raw-data.index');
+    Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
 });
 
 require __DIR__ . '/auth.php';
