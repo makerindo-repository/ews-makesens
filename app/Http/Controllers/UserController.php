@@ -157,7 +157,7 @@ class UserController extends Controller
             $profilePict = ImageService::image_intervention($request->file('profile_picture'), 'images/profile-picture/', 1 / 1);
             $user->update(['profile_picture' => $profilePict]);
             $changes['profile_picture'] = [
-                'old' => $beforeUpdate['photo'],
+                'old' => $beforeUpdate['profile_picture'],
                 'new' => $profilePict,
             ];
         }
