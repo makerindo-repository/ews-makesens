@@ -21,7 +21,7 @@ class RawDataController extends Controller
             $query->whereDate('created_at', '<=', $request->end_date);
         }
 
-        $data = $query->get();
+        $data = $query->latest()->get();
         return view('pages.raw-data.index', compact('iotNodes', 'data'));
     }
 }
