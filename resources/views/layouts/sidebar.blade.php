@@ -63,7 +63,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="menu-link">
+                            <a href="{{ route('raw-data.index') }}" class="menu-link">
                                 <div class="text-sm"><span class="me-2">--</span> Data Raw</div>
                             </a>
                         </li>
