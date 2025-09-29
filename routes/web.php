@@ -5,6 +5,7 @@ use App\Http\Controllers\IoTNodeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicNodeController;
+use App\Http\Controllers\RawDataController;
 use App\Http\Controllers\ThresholdController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VolunteerController;
@@ -79,6 +80,8 @@ Route::middleware('auth')->group(function () {
         'update' => 'public-node.update',
         'destroy' => 'public-node.destroy',
     ]);
+
+    Route::get('/raw-data', [RawDataController::class, 'index'])->name('raw-data.index');
 });
 
 require __DIR__ . '/auth.php';
