@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\IoTNode;
 use App\Models\Threshold;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ThresholdController extends Controller
 {
@@ -65,6 +66,12 @@ class ThresholdController extends Controller
 
         $post = Threshold::create($data);
 
+        activity()
+            ->performedOn($post)
+            ->event('create')
+            ->causedBy(Auth::user())
+            ->log('Threshold baru ditambahkan untuk IoT Node dengan ID ' . $request->iot_node);
+
         return redirect()->route('threshold.index')->with('success', 'Data threshold berhasil disimpan!');
     }
 
@@ -120,7 +127,27 @@ class ThresholdController extends Controller
             'h1' => $request->h1,
         ];
 
+        $beforeUpdate = $threshold->getOriginal();
         $threshold->update($data);
+
+        $changes = [];
+
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $beforeUpdate) &&  $beforeUpdate[$key] !== $value) {
+                $changes[$key] = [
+                    'old' => $beforeUpdate[$key],
+                    'new' => $value,
+                ];
+            }
+        }
+
+        activity()
+            ->performedOn($threshold)
+            ->event('update')
+            ->withProperties(['changes' => $changes])
+            ->causedBy(Auth::user())
+            ->log('Threshold untuk IoT Node dengan ID ' . $threshold->iot_node_id . ' berhasil diupdate');
+
         return redirect()->route('threshold.index')->with('success', 'Data threshold berhasil diubah!');
     }
 
@@ -131,6 +158,12 @@ class ThresholdController extends Controller
     {
         $threshold = Threshold::findOrFail($id);
         $threshold->delete();
+
+        activity()
+            ->performedOn($threshold)
+            ->event('delete')
+            ->causedBy(Auth::user())
+            ->log('Threshold untuk IoT Node dengan ID ' . $threshold->iot_node_id . ' dihapus');
 
         return redirect()->route('threshold.index')->with('success', 'Data threshold berhasil dihapus!');
     }
