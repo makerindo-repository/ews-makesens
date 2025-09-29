@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\IoTNode;
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class IoTNodeController extends Controller
 {
@@ -53,6 +54,12 @@ class IoTNodeController extends Controller
 
         $post = IoTNode::create($data);
 
+        activity()
+            ->performedOn($post)
+            ->event('create')
+            ->causedBy(Auth::user())
+            ->log('IoT Node baru ditambahkan: ' . $request->serial_number);
+
         return redirect()->route('iot-node.index')->with('success', 'Data node berhasil disimpan!');
     }
 
@@ -100,7 +107,26 @@ class IoTNodeController extends Controller
             'location_id' => $request->location,
         ];
 
+        $beforeUpdate = $node->getOriginal();
         $node->update($data);
+
+        $changes = [];
+
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $beforeUpdate) &&  $beforeUpdate[$key] !== $value) {
+                $changes[$key] = [
+                    'old' => $beforeUpdate[$key],
+                    'new' => $value,
+                ];
+            }
+        }
+
+        activity()
+            ->performedOn($node)
+            ->event('update')
+            ->withProperties(['changes' => $changes])
+            ->causedBy(Auth::user())
+            ->log('IoT Node dengan nomor serial ' . $node->serial_number . ' berhasil diupdate');
 
         return redirect()->route('iot-node.index')->with('success', 'Data node berhasil diubah!');
     }
@@ -112,6 +138,12 @@ class IoTNodeController extends Controller
     {
         $node = IoTNode::findOrFail($id);
         $node->delete();
+
+        activity()
+            ->performedOn($node)
+            ->event('delete')
+            ->causedBy(Auth::user())
+            ->log('IoT Node dihapus: ' . $node->serial_number);
 
         return redirect()->route('iot-node.index')->with('success', 'Data node berhasil dihapus!');
     }
