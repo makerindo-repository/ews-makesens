@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -75,6 +76,12 @@ class UserController extends Controller
 
         $post = User::create($data);
 
+        activity()
+            ->performedOn($post)
+            ->event('create')
+            ->causedBy(Auth::user())
+            ->log('User baru ditambahkan: ' . $request->name);
+
         return redirect()->route('user.index')->with('success', 'Data user berhasil disimpan!');
     }
 
@@ -136,17 +143,31 @@ class UserController extends Controller
             'address' => $request->address,
         ];
 
+        $beforeUpdate = $user->getOriginal();
         $user->update($data);
 
         if ($request->filled('password')) {
             $user->update(['password' => Hash::make($request->password)]);
         }
 
+        $changes = [];
+
         if ($request->hasFile('profile_picture')) {
             ImageService::deleteImage($user->profile_picture);
             $profilePict = ImageService::image_intervention($request->file('profile_picture'), 'images/profile-picture/', 1 / 1);
             $user->update(['profile_picture' => $profilePict]);
+            $changes['profile_picture'] = [
+                'old' => $beforeUpdate['photo'],
+                'new' => $profilePict,
+            ];
         }
+
+        activity()
+            ->performedOn($user)
+            ->event('update')
+            ->withProperties(['changes' => $changes])
+            ->causedBy(Auth::user())
+            ->log('User dengan ID ' . $user->id . ' berhasil diupdate');
 
         return redirect()->route('user.index')->with('success', 'Data user berhasil diubah!');
     }
@@ -161,6 +182,12 @@ class UserController extends Controller
             ImageService::deleteImage($user->profile_picture);
         }
         $user->delete();
+
+        activity()
+            ->performedOn($user)
+            ->event('delete')
+            ->causedBy(Auth::user())
+            ->log('User dihapus: ' . $user->name);
 
         return redirect()->route('user.index')->with('success', 'Data user berhasil dihapus!');
     }
