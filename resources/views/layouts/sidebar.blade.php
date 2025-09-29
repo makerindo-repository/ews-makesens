@@ -70,12 +70,12 @@
                     </ul>
                 </li>
 
-                <li class="menu-item">
+                {{-- <li class="menu-item">
                     <a href="#" class="menu-link">
                         <i class="menu-icon fa-solid fa-clipboard"></i>
                         <div class="text-base">Laporan</div>
                     </a>
-                </li>
+                </li> --}}
 
                 <!-- Group: Konfigurasi -->
                 <li class="mt-6 px-6 text-xs font-semibold text-slate-500 uppercase tracking-wider">
