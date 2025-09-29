@@ -129,7 +129,7 @@
 
 
                 <li class="menu-item">
-                    <a href="#" class="menu-link">
+                    <a href="{{ route('activity-log.index') }}" class="menu-link">
                         <i class="menu-icon fa-solid fa-clock-rotate-left"></i>
                         <div class="text-base">Log Aktivitas</div>
                     </a>
