@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\IoTNode;
 use App\Models\PublicNode;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PublicNodeController extends Controller
 {
@@ -57,6 +58,13 @@ class PublicNodeController extends Controller
         ];
 
         $post = PublicNode::create($data);
+
+        activity()
+            ->performedOn($post)
+            ->event('create')
+            ->causedBy(Auth::user())
+            ->log('Publik Node baru ditambahkan: ' . $request->serial_number);
+            
         return redirect()->route('public-node.index')->with('success', 'Data publik node berhasil disimpan!');
     }
 
@@ -110,7 +118,26 @@ class PublicNodeController extends Controller
             'iot_node_id' => $request->iot_node,
         ];
 
+        $beforeUpdate = $pubNode->getOriginal();
         $pubNode->update($data);
+
+        $changes = [];
+
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $beforeUpdate) &&  $beforeUpdate[$key] !== $value) {
+                $changes[$key] = [
+                    'old' => $beforeUpdate[$key],
+                    'new' => $value,
+                ];
+            }
+        }
+
+        activity()
+            ->performedOn($pubNode)
+            ->event('update')
+            ->withProperties(['changes' => $changes])
+            ->causedBy(Auth::user())
+            ->log('Publik Node dengan nomor serial ' . $pubNode->serial_number . ' berhasil diupdate');
 
         return redirect()->route('public-node.index')->with('success', 'Data publik node berhasil diubah!');
     }
@@ -122,6 +149,12 @@ class PublicNodeController extends Controller
     {
         $pubNode = PublicNode::findOrFail($id);
         $pubNode->delete();
+
+        activity()
+            ->performedOn($pubNode)
+            ->event('delete')
+            ->causedBy(Auth::user())
+            ->log('Publik Node dihapus: ' . $pubNode->serial_number);
 
         return redirect()->route('public-node.index')->with('success', 'Data publik node berhasil dihapus!');
     }
