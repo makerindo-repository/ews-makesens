@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LocationController extends Controller
 {
@@ -55,6 +56,12 @@ class LocationController extends Controller
 
         $post = Location::create($data);
 
+        activity()
+            ->performedOn($post)
+            ->event('create')
+            ->causedBy(Auth::user())
+            ->log('Lokasi baru ditambahkan: ' . $request->name);
+
         return redirect()->route('location.index')->with('success', 'Data lokasi berhasil disimpan!');
     }
 
@@ -105,7 +112,26 @@ class LocationController extends Controller
         ];
 
         $location = Location::findOrFail($id);
+        $beforeUpdate = $location->getOriginal();
         $location->update($data);
+
+        $changes = [];
+
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $beforeUpdate) &&  $beforeUpdate[$key] !== $value) {
+                $changes[$key] = [
+                    'old' => $beforeUpdate[$key],
+                    'new' => $value,
+                ];
+            }
+        }
+
+        activity()
+            ->performedOn($location)
+            ->event('update')
+            ->withProperties(['changes' => $changes])
+            ->causedBy(Auth::user())
+            ->log('Lokasi dengan ID ' . $location->id . ' berhasil diupdate');
 
         return redirect()->route('location.index')->with('success', 'Data lokasi berhasil diubah!');
     }
@@ -117,6 +143,12 @@ class LocationController extends Controller
     {
         $location = Location::findOrFail($id);
         $location->delete();
+
+        activity()
+            ->performedOn($location)
+            ->event('delete')
+            ->causedBy(Auth::user())
+            ->log('Lokasi dihapus: ' . $location->name);
 
         return redirect()->route('location.index')->with('success', 'Data lokasi berhasil dihapus!');
     }
