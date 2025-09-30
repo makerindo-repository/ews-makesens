@@ -90,9 +90,9 @@
                 </li>
 
                 <li class="menu-item">
-                    <a href="#" class="menu-link">
-                        <i class="menu-icon fa-solid fa-key"></i>
-                        <div class="text-base">Manajemen API</div>
+                    <a href="{{ route('weather.index') }}" class="menu-link">
+                        <i class="menu-icon fa-solid fa-cloud"></i>
+                        <div class="text-base">Manajemen Data Cuaca</div>
                     </a>
                 </li>
 
