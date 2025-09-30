@@ -10,6 +10,7 @@ use App\Http\Controllers\RawDataController;
 use App\Http\Controllers\ThresholdController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VolunteerController;
+use App\Http\Controllers\WeatherController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,7 +34,7 @@ Route::middleware('auth')->group(function () {
         'update' => 'iot-node.update',
         'destroy' => 'iot-node.destroy',
     ]);
-    
+
     Route::resource('location', LocationController::class)->except('show')->names([
         'index' => 'location.index',
         'create' => 'location.create',
@@ -42,7 +43,7 @@ Route::middleware('auth')->group(function () {
         'update' => 'location.update',
         'destroy' => 'location.destroy',
     ]);
-    
+
     Route::resource('user', UserController::class)->except('show')->names([
         'index' => 'user.index',
         'create' => 'user.create',
@@ -72,7 +73,7 @@ Route::middleware('auth')->group(function () {
         'update' => 'threshold.update',
         'destroy' => 'threshold.destroy',
     ]);
-    
+
     Route::resource('public-node', PublicNodeController::class)->except('show')->names([
         'index' => 'public-node.index',
         'create' => 'public-node.create',
@@ -84,6 +85,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/raw-data', [RawDataController::class, 'index'])->name('raw-data.index');
     Route::get('/activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
+    Route::get('/weather', [WeatherController::class, 'index'])->name('weather.index');
+    Route::post('/weather', [WeatherController::class, 'store'])->name('weather.store');
+    Route::post('/weather/cities', [WeatherController::class, 'getCities']);
+    Route::post('/weather/districts', [WeatherController::class, 'getDistricts']);
+    Route::post('/weather/villages', [WeatherController::class, 'getVillages']);
 });
 
 require __DIR__ . '/auth.php';
