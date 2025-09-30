@@ -117,17 +117,17 @@
                 <div x-show="open" x-transition class="mt-4 p-4 bg-white rounded-lg shadow">
                     <form method="GET" action="{{ route('raw-data.index') }}"
                         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <!-- Node -->
-                        {{-- <div>
-                            <label class="block mb-1 text-sm font-medium text-gray-700">Node</label>
-                            <select name="node"
+                        <!-- Status -->
+                        <div>
+                            <label class="block mb-1 text-sm font-medium text-gray-700">Status</label>
+                            <select name="status"
                                 class="w-full border-gray-300 bg-gray-100 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">Pilih Node</option>
-                                @foreach ($iotNodes as $node)
-                                    <option value="{{ $node->id }}">{{ $node->name }}</option>
-                                @endforeach
+                                <option value="">Pilih Status</option>
+                                <option value="AMAN">Aman</option>
+                                <option value="WASPADA">Waspada</option>
+                                <option value="AWAS">Awas</option>
                             </select>
-                        </div> --}}
+                        </div>
 
                         <!-- Tanggal Mulai -->
                         <div>
@@ -168,7 +168,7 @@
                                 <th>Timestamp</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
-                                <th>Jarak Sensor Ke Air</th>
+                                <th>Ketinggian Air</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -179,16 +179,27 @@
                                     <td>{{ (float) $item->latitude }}</td>
                                     <td>{{ (float) $item->longitude }}</td>
                                     <td>{{ $item->distance }}cm</td>
-                                    <td>{{ $item->status }}</td>
+                                    <td>
+                                        <span
+                                            class="px-2 py-1 rounded-full font-semibold text-white {{ $item->status == 'AMAN' ? 'bg-green-500' : ($item->status == 'WASPADA' ? 'bg-yellow-500' : 'bg-red-500') }}">
+                                            {{ $item->status }}
+                                        </span>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            <div id="map" style="height: 500px; margin-top: 20px;"></div>
         </div>
     </div>
     @push('scripts')
+        <!-- Leaflet core -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
         <script>
             // Get current timestamp for filename
             const timestamp = () => {
@@ -253,26 +264,52 @@
             //     });
             // @endif
 
-            // Alert confirm delete
-            // document.querySelectorAll('.delete-form').forEach(form => {
-            //     form.addEventListener('submit', function(event) {
-            //         event.preventDefault();
+            // Show marker dari data yang didapat
+            const locations = @json($locations);
 
-            //         const serialNumber = this.getAttribute('data-serial');
-            //         Swal.fire({
-            //             title: 'Konfirmasi',
-            //             text: `Apakah Anda yakin ingin menghapus data node dengan nomor serial ${serialNumber}?`,
-            //             icon: 'warning',
-            //             showCancelButton: true,
-            //             confirmButtonText: 'Ya, Hapus!',
-            //             cancelButtonText: 'Batal'
-            //         }).then((result) => {
-            //             if (result.isConfirmed) {
-            //                 this.submit();
-            //             }
-            //         });
-            //     })
-            // });
+            if (locations.length > 0) {
+                // Cari titik pertama yang valid untuk posisi awal
+                const firstValid = locations.find(loc => loc.lat !== 0 && loc.lng !== 0);
+
+                if (firstValid) {
+                    const map = L.map('map').setView([firstValid.lat, firstValid.lng], 15);
+
+                    // Menambahkan layer peta Google Maps Satelit
+                    L.tileLayer('https://www.google.cn/maps/vt?lyrs=s,h&x={x}&y={y}&z={z}', {
+                        attribution: '&copy; Google Hybrid',
+                        maxZoom: 18,
+                    }).addTo(map);
+
+                    const bounds = [];
+
+                    locations.forEach(loc => {
+                        // Skip kalau lat/lng kosong atau nol
+                        if (loc.lat && loc.lng && loc.lat !== 0 && loc.lng !== 0) {
+                            const marker = L.marker([loc.lat, loc.lng]).addTo(map);
+
+                            marker.bindPopup(`
+                        <b>${loc.timestamp}</b><br>
+                        Ketinggian Air: ${loc.distance} cm<br>
+                        Status: ${loc.status}
+                    `);
+
+                            bounds.push([loc.lat, loc.lng]);
+                        }
+                    });
+
+                    if (bounds.length > 1) {
+                        map.fitBounds(bounds, {
+                            padding: [50, 50]
+                        });
+                    }
+                } else {
+                    document.getElementById('map').innerHTML =
+                        "<p class='text-center text-gray-500 mt-4'>Tidak ada data lokasi yang valid.</p>";
+                }
+            } else {
+                document.getElementById('map').innerHTML =
+                    "<p class='text-center text-gray-500 mt-4'>Tidak ada data lokasi.</p>";
+            }
         </script>
     @endpush
 </x-app-layout>
