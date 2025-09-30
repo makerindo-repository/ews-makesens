@@ -61,37 +61,81 @@
                     </div>
 
                     <!-- Widget Cuaca -->
-                    <div class="absolute top-4 right-4 z-10">
+                    {{-- <div class="absolute top-4 right-4 z-10">
                         <div class="bg-white shadow-md rounded-xl p-4 w-60">
                             <h3 class="text-sm font-semibold text-gray-700 mb-2">Cuaca Terkini</h3>
 
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-3xl font-bold text-gray-800" id="temp">--°C</p>
+                                    <p class="text-3xl font-bold text-gray-800" id="temp">
+                                        {{ $weather['temp'] ?? '--' }}&deg;C
+                                    </p>
                                     <p class="text-xs text-gray-500">Suhu</p>
                                 </div>
                                 <div>
                                     <!-- Ikon cuaca utama, bisa diganti sesuai kode BMKG -->
-                                    <i class="fas fa-sun text-yellow-400 text-4xl" id="weatherIcon"></i>
+                                    <i class="{{ $weather['icon'] ?? 'fas fa-question-circle text-gray-400' }} text-4xl" id="weatherIcon"></i>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-3 gap-2 mt-4 text-xs text-gray-600">
                                 <div class="flex flex-col items-center justify-center gap-1">
                                     <i class="fas fa-wind text-gray-500"></i>
-                                    <span id="wind">-- km/h</span>
+                                    <span id="wind">{{ $weather['wind'] ?? '--' }} km/h</span>
                                 </div>
                                 <div class="flex flex-col items-center justify-center gap-1">
                                     <i class="fas fa-tint text-blue-500"></i>
-                                    <span id="humidity">-- %</span>
+                                    <span id="humidity">{{ $weather['humidity'] ?? '--' }} %</span>
                                 </div>
                                 <div class="flex flex-col items-center justify-center gap-1">
                                     <i class="fas fa-cloud-rain text-blue-400"></i>
-                                    <span id="rain">-- mm</span>
+                                    <span id="rain">{{ $weather['rain'] ?? '--' }} mm</span>
                                 </div>
                             </div>
                         </div>
+                    </div> --}}
+
+                    <div class="absolute top-4 right-4 z-10">
+                        <div class="bg-white shadow-md rounded-xl p-4 w-60">
+                            <h3 class="text-sm font-semibold text-gray-700 mb-2">Cuaca Terkini</h3>
+
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-3xl font-bold text-gray-800">
+                                        {{ $weather['temp'] ?? '--' }}°C
+                                    </p>
+                                    <p class="text-xs text-gray-500">Suhu</p>
+                                </div>
+                                <div>
+                                    @if (!empty($weather['icon_url']))
+                                        <img src="{{ $weather['icon_url'] }}" alt="Cuaca" class="w-12 h-12">
+                                    @else
+                                        <i class="fas fa-question-circle text-gray-400 text-4xl"></i>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-2 mt-4 text-xs text-gray-600">
+                                <div class="flex flex-col items-center justify-center gap-1">
+                                    <i class="fas fa-wind text-gray-500"></i>
+                                    <span>{{ $weather['wind'] ?? '--' }} km/h</span>
+                                </div>
+                                <div class="flex flex-col items-center justify-center gap-1">
+                                    <i class="fas fa-tint text-blue-500"></i>
+                                    <span>{{ $weather['humidity'] ?? '--' }} %</span>
+                                </div>
+                                <div class="flex flex-col items-center justify-center gap-1">
+                                    <i class="fas fa-cloud-rain text-blue-400"></i>
+                                    <span>{{ $weather['rain'] ?? '--' }} mm</span>
+                                </div>
+                            </div>
+
+                            <p class="text-xs text-center text-gray-500 mt-2">
+                                {{ $weather['desc'] ?? '' }}
+                            </p>
+                        </div>
                     </div>
+
                 </div>
             </div>
 
@@ -149,7 +193,8 @@
                         <!-- Modal Header -->
                         <div class="flex flex-col mb-4 gap-1">
                             <h2 class="text-lg font-semibold text-gray-700">Prediksi banjir di masa depan dengan AI</h2>
-                            <p class="text-sm text-slate-500 leading-tight">Pilih IoT Node untuk data yang akan digunakan sebagai prediksi</p>
+                            <p class="text-sm text-slate-500 leading-tight">Pilih IoT Node untuk data yang akan
+                                digunakan sebagai prediksi</p>
                         </div>
 
                         <!-- Modal Body -->
