@@ -38,7 +38,7 @@ class SubscribeMqtt extends Command
                         'battery_level' => $data['data']['batteryLevel'] ?? 0,
                         'latitude'      => $data['data']['Latitude'] ?? 0,
                         'longitude'     => $data['data']['Longitude'] ?? 0,
-                        'distance'      => $data['data']['Distance'] ?? 0,
+                        'distance'      => $data['data']['Tinggi Air'] ?? 0,
                         'status'        => $data['data']['Status'] ?? '-',
                     ]);
                 }
