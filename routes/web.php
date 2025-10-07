@@ -89,6 +89,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/weather/cities', [WeatherController::class, 'getCities']);
     Route::post('/weather/districts', [WeatherController::class, 'getDistricts']);
     Route::post('/weather/villages', [WeatherController::class, 'getVillages']);
+    Route::get('/chart/tma', [DashboardController::class, 'tmaChartData']);
+    Route::get('/map/data', [DashboardController::class, 'mapData']);
 });
 
 require __DIR__ . '/auth.php';
