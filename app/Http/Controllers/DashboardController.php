@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\IoTNode;
+use App\Models\Location;
+use App\Models\PublicNode;
+use App\Models\RawData;
+use App\Models\User;
 use App\Models\WeatherSetting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -12,7 +17,7 @@ class DashboardController extends Controller
     public function index()
     {
         $weather = null;
-
+        
         // ambil adm4 dari DB (kode desa)
         $setting = WeatherSetting::first();
         if (!$setting || !$setting->village_code) {
@@ -63,7 +68,12 @@ class DashboardController extends Controller
             }
         }
 
-        return view('dashboard', compact('weather'));
+        $totalPublicNodes = PublicNode::count();
+        $totalIoTNodes = IoTNode::count();
+        $totalLocation = Location::count();
+        $totalVolunteer = User::where('role', 'relawan')->count();
+
+        return view('dashboard', compact('weather', 'totalPublicNodes', 'totalIoTNodes', 'totalLocation', 'totalVolunteer'));
     }
 
     // Format kode desa sesuai adm4 BMKG
@@ -77,5 +87,42 @@ class DashboardController extends Controller
         $adm4 = substr($code, 6, 4);
 
         return "{$adm1}.{$adm2}.{$adm3}.{$adm4}";
+    }
+
+    public function tmaChartData()
+    {
+        // Ambil data 24 jam terakhir
+        $data = RawData::where('created_at', '>=', Carbon::now()->subDay())
+            ->orderBy('created_at')
+            ->get(['distance', 'created_at']);
+
+        // Format jadi array untuk chart
+        $chartData = [
+            'series' => [
+                [
+                    'name' => 'TMA (cm)',
+                    'data' => $data->map(function ($row) {
+                        return [
+                            // X pakai timestamp (ms) biar ApexChart bisa format waktu
+                            'x' => $row->created_at->format('H:i:s'),
+                            'y' => $row->distance
+                        ];
+                    })
+                ]
+            ]
+        ];
+
+        return response()->json($chartData);
+    }
+
+    public function mapData()
+    {
+        $nodes = PublicNode::select('id', 'name', 'latitude', 'longitude')->get();
+        $locations = Location::select('id', 'name', 'polygon')->get();
+
+        return response()->json([
+            'nodes' => $nodes,
+            'locations' => $locations
+        ]);
     }
 }
