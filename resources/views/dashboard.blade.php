@@ -15,31 +15,31 @@
             <!-- Summary Data -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 <div class="bg-white px-4 py-3 rounded-lg shadow-sm flex items-center gap-5">
-                    <i class="fa-solid fa-circle-check text-primary text-2xl"></i>
+                    <i class="fa-solid fa-microchip text-primary text-2xl"></i>
                     <div>
-                        <p class="text-primary text-sm font-medium">IoT Node Aktif</p>
-                        <span class="text-2xl text-primary font-bold">5 Node</span>
+                        <p class="text-primary text-sm font-medium">Total IoT Node</p>
+                        <span class="text-2xl text-primary font-bold">{{ $totalIoTNodes }} Node</span>
                     </div>
                 </div>
                 <div class="bg-white px-4 py-3 rounded-lg shadow-sm flex items-center gap-5">
-                    <i class="fa-solid fa-circle-check text-primary text-2xl"></i>
+                    <i class="fa-solid fa-satellite text-primary text-2xl"></i>
                     <div>
-                        <p class="text-primary text-sm font-medium">Publik Node Aktif</p>
-                        <span class="text-2xl text-primary font-bold">12 Node</span>
+                        <p class="text-primary text-sm font-medium">Total Publik Node</p>
+                        <span class="text-2xl text-primary font-bold">{{ $totalPublicNodes }} Node</span>
                     </div>
                 </div>
                 <div class="bg-white px-4 py-3 rounded-lg shadow-sm flex items-center gap-5">
-                    <i class="fa-solid fa-circle-xmark text-danger text-2xl"></i>
+                    <i class="fa-solid fa-location-dot text-primary text-2xl"></i>
                     <div>
-                        <p class="text-danger text-sm font-medium">IoT Node Tidak Aktif</p>
-                        <span class="text-2xl text-danger font-bold">5 Node</span>
+                        <p class="text-primary text-sm font-medium">Total Lokasi</p>
+                        <span class="text-2xl text-primary font-bold">{{ $totalLocation }} Lokasi</span>
                     </div>
                 </div>
                 <div class="bg-white px-4 py-3 rounded-lg shadow-sm flex items-center gap-5">
-                    <i class="fa-solid fa-circle-xmark text-danger text-2xl"></i>
+                    <i class="fa-solid fa-users text-primary text-2xl"></i>
                     <div>
-                        <p class="text-danger text-sm font-medium">IoT Node Aktif</p>
-                        <span class="text-2xl text-danger font-bold">5 Node</span>
+                        <p class="text-primary text-sm font-medium">Total Relawan</p>
+                        <span class="text-2xl text-primary font-bold">{{ $totalVolunteer }} Relawan</span>
                     </div>
                 </div>
             </div>
@@ -151,7 +151,7 @@
             <!-- Filter & Prediksi AI -->
             <div class="flex flex-col justify-center gap-3">
                 <!-- Form Filter -->
-                <form id="filterForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {{-- <form id="filterForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <input type="date" id="start_date" name="start_date" value="{{ request('start_date') }}"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -178,7 +178,7 @@
                             Reset
                         </button>
                     </div>
-                </form>
+                </form> --}}
 
                 <!-- Button Prediksi AI -->
                 <button id="openModalBtn"
@@ -189,26 +189,67 @@
                 <!-- Modal Select Node untuk show Prediksi AI -->
                 <div id="prediksiModal"
                     class="fixed inset-0 bg-gray-900 bg-opacity-50 items-center justify-center z-50 hidden">
-                    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+                    <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6">
                         <!-- Modal Header -->
                         <div class="flex flex-col mb-4 gap-1">
                             <h2 class="text-lg font-semibold text-gray-700">Prediksi banjir di masa depan dengan AI</h2>
-                            <p class="text-sm text-slate-500 leading-tight">Pilih IoT Node untuk data yang akan
-                                digunakan sebagai prediksi</p>
+                            <p class="text-sm text-slate-500 leading-tight">
+                                Berikut hasil prediksi rata-rata TMA dalam 7 hari ke depan
+                            </p>
                         </div>
 
-                        <!-- Modal Body -->
-                        <div class="mb-4">
-                            <label for="nodeOption" class="block text-sm font-medium text-gray-700 mb-1">
-                                IoT Node
-                            </label>
-                            <select id="nodeOption"
-                                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="">-- Pilih --</option>
-                                <option value="satu">Prediksi 1</option>
-                                <option value="dua">Prediksi 2</option>
-                                <option value="tiga">Prediksi 3</option>
-                            </select>
+                        <!-- Modal Body (Table) -->
+                        <div class="overflow-x-auto mb-4">
+                            <table class="min-w-full border border-gray-300 rounded-lg">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 border">Tanggal
+                                        </th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 border">
+                                            Rata-rata TMA (cm)</th>
+                                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 border">
+                                            Prediksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Contoh data 7 row -->
+                                    <tr>
+                                        <td class="px-4 py-2 border text-sm">2025-10-02</td>
+                                        <td class="px-4 py-2 border text-sm">120</td>
+                                        <td class="px-4 py-2 border text-sm">Tidak Banjir</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 border text-sm">2025-10-03</td>
+                                        <td class="px-4 py-2 border text-sm">135</td>
+                                        <td class="px-4 py-2 border text-sm">Berpotensi Banjir</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 border text-sm">2025-10-04</td>
+                                        <td class="px-4 py-2 border text-sm">140</td>
+                                        <td class="px-4 py-2 border text-sm">Berpotensi Banjir</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 border text-sm">2025-10-05</td>
+                                        <td class="px-4 py-2 border text-sm">150</td>
+                                        <td class="px-4 py-2 border text-sm">Berpotensi Banjir</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 border text-sm">2025-10-06</td>
+                                        <td class="px-4 py-2 border text-sm">160</td>
+                                        <td class="px-4 py-2 border text-sm">Akan Banjir</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 border text-sm">2025-10-07</td>
+                                        <td class="px-4 py-2 border text-sm">170</td>
+                                        <td class="px-4 py-2 border text-sm">Akan Banjir</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 border text-sm">2025-10-08</td>
+                                        <td class="px-4 py-2 border text-sm">180</td>
+                                        <td class="px-4 py-2 border text-sm">Akan Banjir</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
 
                         <!-- Modal Footer -->
@@ -217,12 +258,13 @@
                                 class="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-md px-4 py-2">
                                 Tutup
                             </button>
-                            <button class="bg-green-600 hover:bg-green-800 text-white rounded-md px-4 py-2">
-                                Kirim
-                            </button>
+                            {{-- <button class="bg-green-600 hover:bg-green-800 text-white rounded-md px-4 py-2">
+                                Simpan
+                            </button> --}}
                         </div>
                     </div>
                 </div>
+
 
             </div>
 
@@ -236,7 +278,7 @@
             </div>
 
             <!-- Tangkapan Kamera Node -->
-            <div class="bg-white shadow-sm p-4">
+            {{-- <div class="bg-white shadow-sm p-4">
                 <div class="flex justify-between items-center mb-3">
                     <h2 class="text-lg font-semibold">Tangkapan Kamera per IoT Node</h2>
                     <span class="text-sm font-semibold text-[#9009BD]">22 - 08 - 2025</span>
@@ -279,7 +321,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Daerah Rawan Banjir -->
             <div class="bg-white shadow-sm p-4">
@@ -408,101 +450,217 @@
 
             document.addEventListener("DOMContentLoaded", function() {
                 // Render Chart TMA (Tinggi Muka Air)
-                var options = {
-                    chart: {
-                        type: 'area',
-                        height: 320,
-                        toolbar: {
-                            show: false
-                        },
-                    },
-                    stroke: {
-                        curve: 'smooth',
-                        width: 3
-                    },
-                    series: [{
-                        name: 'TMA (cm)',
-                        data: [80, 85, 90, 95, 100, 110, 125, 135, 145, 150, 160, 170, 165, 160, 155, 150,
-                            145, 140,
-                            130, 120, 110, 100, 90, 85
-                        ]
-                    }],
-                    xaxis: {
-                        categories: [
-                            '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
-                            '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
-                            '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
-                            '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
-                        ],
-                        title: {
-                            text: 'Waktu (Jam)'
-                        }
-                    },
-                    yaxis: {
-                        title: {
-                            text: 'Tinggi Muka Air (cm)'
-                        },
-                        min: 20,
-                        max: 180
-                    },
-                    fill: {
-                        type: 'solid',
-                        opacity: 0.2,
-                        colors: ['#3b82f6']
-                    },
-                    colors: ['#3b82f6'],
-                    markers: {
-                        size: 4,
-                        colors: ['#3b82f6'],
-                        strokeColors: '#fff',
-                        strokeWidth: 2
-                    },
-                    legend: {
-                        position: 'bottom',
-                        markers: {
-                            radius: 12
-                        }
-                    },
-                    annotations: {
-                        yaxis: [{
-                                y: 100,
-                                borderColor: '#f59e0b',
-                                label: {
-                                    text: 'Waspada',
-                                    style: {
-                                        color: '#fff',
-                                        background: '#f59e0b'
-                                    }
+                fetch("{{ url('/chart/tma') }}")
+                    .then(res => res.json())
+                    .then(data => {
+                        var options = {
+                            chart: {
+                                type: 'area',
+                                height: 320,
+                                toolbar: {
+                                    show: false
                                 }
                             },
-                            {
-                                y: 140,
-                                borderColor: '#f97316',
-                                label: {
-                                    text: 'Siaga',
-                                    style: {
-                                        color: '#fff',
-                                        background: '#f97316'
-                                    }
+                            stroke: {
+                                curve: 'smooth',
+                                width: 3
+                            },
+                            series: data.series,
+                            xaxis: {
+                                type: 'category',
+                                title: {
+                                    text: 'Waktu (Jam)'
                                 }
                             },
-                            {
-                                y: 170,
-                                borderColor: '#ef4444',
-                                label: {
-                                    text: 'Awas',
-                                    style: {
-                                        color: '#fff',
-                                        background: '#ef4444'
-                                    }
+                            yaxis: {
+                                title: {
+                                    text: 'Tinggi Muka Air (cm)'
+                                },
+                                min: 20,
+                                max: 180
+                            },
+                            fill: {
+                                type: 'solid',
+                                opacity: 0.2,
+                                colors: ['#3b82f6']
+                            },
+                            colors: ['#3b82f6'],
+                            markers: {
+                                size: 4,
+                                colors: ['#3b82f6'],
+                                strokeColors: '#fff',
+                                strokeWidth: 2
+                            },
+                            legend: {
+                                position: 'bottom',
+                                markers: {
+                                    radius: 12
                                 }
+                            },
+                            annotations: {
+                                yaxis: [{
+                                        y: 50,
+                                        borderColor: '#22c55e',
+                                        label: {
+                                            text: 'Aman',
+                                            style: {
+                                                color: '#fff',
+                                                background: '#22c55e'
+                                            }
+                                        }
+                                    },
+                                    {
+                                        y: 100,
+                                        borderColor: '#f97316',
+                                        label: {
+                                            text: 'Waspada',
+                                            style: {
+                                                color: '#fff',
+                                                background: '#f97316'
+                                            }
+                                        }
+                                    },
+                                    {
+                                        y: 149,
+                                        borderColor: '#ef4444',
+                                        label: {
+                                            text: 'Awas',
+                                            style: {
+                                                color: '#fff',
+                                                background: '#ef4444'
+                                            }
+                                        }
+                                    }
+                                ]
                             }
-                        ]
-                    }
-                };
+                        };
 
-                var chart = new ApexCharts(document.querySelector("#tmaChart"), options);
-                chart.render();
+                        var chart = new ApexCharts(document.querySelector("#tmaChart"), options);
+                        chart.render();
+                    });
+
+                // Ambil data dari backend
+                fetch("{{ url('/map/data') }}")
+                    .then(res => res.json())
+                    .then(data => {
+                        // Tampilkan marker IoT Node
+                        data.nodes.forEach(node => {
+                            L.marker([node.latitude, node.longitude])
+                                .addTo(map)
+                                .bindPopup(`<b>${node.name}</b><br>Lat: ${node.latitude}, Lng: ${node.longitude}`);
+                        });
+
+                        // Tampilkan polygon lokasi
+                        data.locations.forEach(loc => {
+                            if (loc.polygon) {
+                                let geojson = JSON.parse(loc.polygon);
+                                L.geoJSON(geojson, {
+                                    style: {
+                                        color: '#3b82f6', // garis biru
+                                        weight: 2,
+                                        fillColor: '#3b82f6',
+                                        fillOpacity: 0.2
+                                    }
+                                }).addTo(map).bindPopup(`<b>${loc.name}</b>`);
+                            }
+                        });
+                    });
+
+                // var options = {
+                //     chart: {
+                //         type: 'area',
+                //         height: 320,
+                //         toolbar: {
+                //             show: false
+                //         },
+                //     },
+                //     stroke: {
+                //         curve: 'smooth',
+                //         width: 3
+                //     },
+                //     series: [{
+                //         name: 'TMA (cm)',
+                //         data: [80, 85, 90, 95, 100, 110, 125, 135, 145, 150, 160, 170, 165, 160, 155, 150,
+                //             145, 140,
+                //             130, 120, 110, 100, 90, 85
+                //         ]
+                //     }],
+                //     xaxis: {
+                //         categories: [
+                //             '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
+                //             '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
+                //             '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
+                //             '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
+                //         ],
+                //         title: {
+                //             text: 'Waktu (Jam)'
+                //         }
+                //     },
+                //     yaxis: {
+                //         title: {
+                //             text: 'Tinggi Muka Air (cm)'
+                //         },
+                //         min: 20,
+                //         max: 180
+                //     },
+                //     fill: {
+                //         type: 'solid',
+                //         opacity: 0.2,
+                //         colors: ['#3b82f6']
+                //     },
+                //     colors: ['#3b82f6'],
+                //     markers: {
+                //         size: 4,
+                //         colors: ['#3b82f6'],
+                //         strokeColors: '#fff',
+                //         strokeWidth: 2
+                //     },
+                //     legend: {
+                //         position: 'bottom',
+                //         markers: {
+                //             radius: 12
+                //         }
+                //     },
+                //     annotations: {
+                //         yaxis: [{
+                //                 y: 100,
+                //                 borderColor: '#f59e0b',
+                //                 label: {
+                //                     text: 'Waspada',
+                //                     style: {
+                //                         color: '#fff',
+                //                         background: '#f59e0b'
+                //                     }
+                //                 }
+                //             },
+                //             {
+                //                 y: 140,
+                //                 borderColor: '#f97316',
+                //                 label: {
+                //                     text: 'Siaga',
+                //                     style: {
+                //                         color: '#fff',
+                //                         background: '#f97316'
+                //                     }
+                //                 }
+                //             },
+                //             {
+                //                 y: 170,
+                //                 borderColor: '#ef4444',
+                //                 label: {
+                //                     text: 'Awas',
+                //                     style: {
+                //                         color: '#fff',
+                //                         background: '#ef4444'
+                //                     }
+                //                 }
+                //             }
+                //         ]
+                //     }
+                // };
+
+                // var chart = new ApexCharts(document.querySelector("#tmaChart"), options);
+                // chart.render();
 
                 // Open Modal Select Node
                 const openModalBtn = document.getElementById('openModalBtn');
