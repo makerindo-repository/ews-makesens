@@ -31,6 +31,9 @@ class DashboardController extends Controller
 
         if ($response->successful()) {
             $json = $response->json();
+            $desa = $json['lokasi']['desa'];
+            $kotkab = $json['lokasi']['kotkab'];
+            $provinsi = $json['lokasi']['provinsi'];
 
             // pastikan ada data
             if (!empty($json['data'][0]['cuaca'])) {
@@ -63,6 +66,9 @@ class DashboardController extends Controller
                         'desc'       => $nearest['weather_desc'] ?? '--',
                         'icon_url'   => $nearest['image'] ?? null,
                         'local_time' => $nearest['local_datetime'] ?? null,
+                        'desa' => $desa,
+                        'kotkab' => $kotkab,
+                        'provinsi' => $provinsi,
                     ];
                 }
             }

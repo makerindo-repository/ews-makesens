@@ -97,7 +97,10 @@
 
                     <div class="absolute top-4 right-4 z-10">
                         <div class="bg-white shadow-md rounded-xl p-4 w-60">
-                            <h3 class="text-sm font-semibold text-gray-700 mb-2">Cuaca Terkini</h3>
+                            <h3 class="text-sm font-semibold text-gray-700">Cuaca Terkini</h3>
+                            <h3 class="text-xs text-gray-700 mb-2"><i
+                                    class="fa-solid fa-location-dot text-primary me-1"></i>{{ $weather['desa'] . ', ' . $weather['kotkab'] . ', ' . $weather['provinsi'] }}
+                            </h3>
 
                             <div class="flex items-center justify-between">
                                 <div>
@@ -547,7 +550,8 @@
                         data.nodes.forEach(node => {
                             L.marker([node.latitude, node.longitude])
                                 .addTo(map)
-                                .bindPopup(`<b>${node.name}</b><br>Lat: ${node.latitude}, Lng: ${node.longitude}`);
+                                .bindPopup(
+                                    `<b>${node.name}</b><br>Lat: ${node.latitude}, Lng: ${node.longitude}`);
                         });
 
                         // Tampilkan polygon lokasi
