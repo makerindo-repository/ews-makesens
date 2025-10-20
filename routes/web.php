@@ -8,6 +8,7 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicNodeController;
 use App\Http\Controllers\RawDataController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ThresholdController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VolunteerController;
@@ -91,6 +92,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/weather/villages', [WeatherController::class, 'getVillages']);
     Route::get('/chart/tma', [DashboardController::class, 'tmaChartData']);
     Route::get('/map/data', [DashboardController::class, 'mapData']);
+    Route::get('/report', [ReportController::class, 'index'])->name('report.index');
+    Route::get('/report/detail/{id}', [ReportController::class, 'show'])->name('report.show');
 });
 
 require __DIR__ . '/auth.php';
